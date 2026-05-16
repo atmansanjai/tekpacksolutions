@@ -1,0 +1,76 @@
+type Solution implements Node{
+    id:ID!
+    name : String!
+    description:String!
+    imageUrl : String!
+    slug: String!
+    machine : [Machine!]!
+    sector : [Sector!]!
+    isActive: Boolean!
+    createdAt: DateTime!
+    updateAt:DateTime!
+}
+
+
+input SolutionInput{
+    name :String!
+    description : String!
+    imageUrl : String!
+    isActive : Boolean!
+    sector : [ID!]!
+    machine : [ID!]!
+}
+
+
+input SolutionFilter{
+    isActive: Boolean
+    search : String
+}
+
+enum SolutionField{
+    NAME
+    CREATED_AT
+}
+
+input SolutionSort{
+    field : SolutionField
+    order: sortOrder
+}
+
+input SolutionConnectionInput {
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filter : SolutionFilter
+    sort : SolutionSort
+}
+
+type SolutionConnectionOutput{
+    edges : [SolutionEdge!]!
+    pageInfo : PageInfo!
+    solutions : [Solution!]!
+}
+
+type SolutionEdge{
+    cursor : String!
+    node : Solution!
+}
+
+extend  type Query {
+    solutions(solutionConnectionInput: SolutionConnectionInput!):SolutionConnectionOutput!
+    solutionById(id:ID!) : Solution!
+    solutionBySlug(slug:String) : Solution!
+}
+extend type Mutation {
+    saveSolution(solutionInput:SolutionInput!):Solution!
+    updateSolution(id:ID!,solutionInput: SolutionInput!):Solution!
+    removeSolution(id:ID!):Solution!
+    activateSolution(id:ID!):Solution!
+    deactivateSolution(id:ID!):Solution!
+    removeMachineFromSolution(solutionId:ID!,machineId:ID!):Solution!
+    addMachineFromSolution(solutionId:ID!,machineId:ID!):Solution!
+    removeSectorFromSolution(solutionId:ID!,sectorId:ID!):Solution!
+    addSectorFromSolution(solutionId:ID!,sectorId:ID!):Solution!
+}
+

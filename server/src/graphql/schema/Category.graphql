@@ -1,0 +1,76 @@
+type Category implements Node{
+    id:ID!
+    name : String!
+    description:String!
+    imageUrl : String!
+    slug: String!
+    sector : [Sector!]!
+    machine :[Machine!]!
+    isActive: Boolean!
+    createdAt: DateTime!
+    updateAt:DateTime!
+}
+
+
+input CategoryInput{
+    name :String!
+    description : String!
+    imageUrl : String!
+    isActive : Boolean!
+    sector : [ID!]!
+    machine : [ID!]!
+}
+
+
+input CategoryFilter{
+    isActive: Boolean
+    search : String
+}
+
+enum CategoryField{
+    NAME
+    CREATED_AT
+}
+
+input CategorySort{
+    field : CategoryField
+    order: sortOrder
+}
+
+input CategoryConnectionInput {
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filter : CategoryFilter
+    sort : CategorySort
+}
+
+type CategoryConnectionOutput{
+    edges : [CategoryEdge!]!
+    pageInfo : PageInfo!
+    categories: [Category!]!
+}
+
+type CategoryEdge{
+    cursor : String!
+    node : Category!
+}
+
+extend  type Query {
+    categories(categoryConnectionInput: CategoryConnectionInput!):CategoryConnectionOutput!
+    categoryById(id:ID!) : Category!
+    categoryBySlug(slug:String) : Category!
+}
+extend type Mutation {
+    saveCategory(categoryInput:CategoryInput!):Category!
+    updateCategory(id:ID!,categoryInput: CategoryInput!):Category!
+    removeCategory(id:ID!):Category!
+    activateCategory(id:ID!):Category!
+    deactivateCategory(id:ID!):Category!
+    removeMachineFromCategory(categoryId:ID!,machineId:ID!):Category!
+    addMachineFromCategory(categoryId:ID!,machineId:ID!):Category!
+    removeSectorFromCategory(categoryId:ID!,sectorId:ID!):Category!
+    addSectorFromCategory(categoryId:ID!,sectorId:ID!):Category!
+}
+

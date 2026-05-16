@@ -1,0 +1,91 @@
+type Machine implements Node{
+    id:ID!
+    name : String!
+    description:String!
+    imageUrl : String!
+    slug: String!
+    solution :[Solution!]!
+    category : [Category!]!
+    isActive: Boolean!
+    feature : [MachineDoc!]!
+    specification : [MachineDoc!]!
+    createdAt: DateTime!
+    updateAt:DateTime!
+}
+
+type MachineDoc{
+    label : String
+    value : String
+}
+
+input MachineDocInput{
+    label : String
+    value : String
+}
+
+
+input MachineInput{
+    name :String!
+    description : String!
+    imageUrl : String!
+    feature : [MachineDocInput!]!
+    spec : [MachineDocInput!]!
+    isActive : Boolean!
+    solution : [ID!]!
+    category : [ID!]!
+}
+
+
+input MachineFilter{
+    isActive: Boolean
+    search : String
+}
+
+enum MachineField{
+    NAME
+    CREATED_AT
+}
+
+input MachineSort{
+    field : MachineField
+    order: sortOrder
+}
+
+input MachineConnectionInput {
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filter : MachineFilter
+    sort : MachineSort
+}
+
+type MachineConnectionOutput{
+    edges : [MachineEdge!]!
+    pageInfo : PageInfo!
+    machines : [Machine!]!
+}
+
+type MachineEdge{
+    cursor : String!
+    node : Machine!
+}
+
+extend  type Query {
+    machines(machineConnectionInput: MachineConnectionInput!):MachineConnectionOutput!
+    machineById(id:ID!) : Machine!
+    machineBySlug(slug:String) : Machine!
+}
+
+extend type Mutation {
+    saveMachine(machineInput:MachineInput!):Machine!
+    updateMachine(id:ID!,machineInput: MachineInput!):Machine!
+    removeMachine(id:ID!):Machine!
+    activateMachine(id:ID!):Machine!
+    deactivateMachine(id:ID!):Machine!
+    removeSolutionFromMachine(machineId:ID!,solutionId:ID!):Machine!
+    addSolutionFromMachine(machineId:ID!,solutionId:ID!):Machine!
+    removeCategoryFromMachine(machineId:ID!,categoryId:ID!):Machine!
+    addCategoryFromMachine(machineId:ID!,categoryId:ID!):Machine!
+}
+

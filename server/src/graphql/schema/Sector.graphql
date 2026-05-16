@@ -1,0 +1,74 @@
+type Sector implements Node{
+    id : ID!
+    name : String!
+    description : String!
+    imageUrl : String!
+    slug: String!
+    category : [Category!]!
+    solution: [Solution!]!
+    isActive: Boolean!
+    createdAt: DateTime!
+    updateAt:DateTime!
+}
+
+input SectorInput{
+    name :String!
+    description : String!
+    imageUrl : String!
+    isActive : Boolean!
+    category : [ID!]!
+    solution : [ID!]!
+}
+
+
+input SectorFilter{
+    isActive: Boolean
+    search : String
+}
+
+enum SectorField{
+    NAME
+    CREATED_AT
+}
+
+input SectorSort{
+    field : SectorField
+    order: sortOrder
+}
+
+input SectorConnectionInput {
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filter : SectorFilter
+    sort : SectorSort
+}
+
+type SectorConnectionOutput{
+    edges : [SectorEdge!]!
+    pageInfo : PageInfo!
+    sectors : [Sector!]!
+}
+
+type SectorEdge{
+    cursor : String!
+    node : Sector!
+}
+
+extend  type Query {
+    sectors(sectorConnectionInput: SectorConnectionInput!):SectorConnectionOutput!
+    sectorById(id:ID!) : Sector!
+    sectorBySlug(slug:String) : Sector!
+}
+extend type Mutation {
+    saveSector(sectorInput:SectorInput!):Sector!
+    updateSector(id:ID!,sectorInput: SectorInput!):Sector!
+    removeSector(id:ID!):Sector!
+    activateSector(id:ID!):Sector!
+    deactivateSector(id:ID!):Sector!
+    removeCategoryFromSector(sectorId:ID!,categoryId:ID!):Sector!
+    addCategoryFromSector(sectorId:ID!,categoryId:ID!):Sector!
+    removeSolutionFromSector(sectorId:ID!,solutionId:ID!):Sector!
+    addSolutionFromSector(sectorId:ID!,solutionId:ID!):Sector!
+}

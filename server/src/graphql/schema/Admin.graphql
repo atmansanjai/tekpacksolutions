@@ -1,0 +1,103 @@
+scalar DateTime
+scalar EmailAddress
+directive @auth(role: Role) on FIELD_DEFINITION
+
+interface Node{
+    id : ID!
+}
+
+interface Error {
+    message: String!
+}
+
+type AccessDeniedError implements Error {
+    message: String!
+    requiredRole: String!
+}
+
+enum Role {
+    ADMIN
+    USER
+}
+
+type Admin implements Node{
+    id : ID!
+    name : String!
+    email : EmailAddress!
+    isActive : Boolean!
+    slug: String!
+    role : Role!
+    createdAt : DateTime
+    updatedAt : DateTime
+}
+
+input AdminInput {
+    email : EmailAddress!
+    isActive : Boolean!
+}
+
+type AdminConnectionOutput{
+    edges : [AdminEdge!]!
+    pageInfo : PageInfo!
+}
+
+type PageInfo {
+    hasPreviousPage:Boolean!
+    hasNextPage: Boolean!
+    endCursor: String
+    startCursor:String
+    totalCount : Int!
+}
+
+type AdminEdge{
+    cursor : String!
+    node : Admin!
+    admins : [Admin!]!
+}
+
+
+input AdminConnectionInput {
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filter : AdminFilter
+    sort : AdminSort
+}
+
+input AdminFilter{
+    isActive : Boolean
+    email : String
+}
+
+enum sortOrder{
+    ASC
+    DESC
+}
+
+enum AdminField{
+    EMAIL
+    CREATED_AT
+}
+
+input AdminSort{
+    field : AdminField
+    order : sortOrder
+}
+
+type Query{
+    node(id:ID!): Node
+    me: Admin
+    admins(adminConnectionInput : AdminConnectionInput):AdminConnectionOutput!
+    adminByEmail(email : EmailAddress!) : Admin!
+    adminById(id:ID!):Admin!
+    adminBySlug(slug:String):Admin!
+}
+
+type Mutation{
+    saveAdmin(adminInput : AdminInput!):Admin! @auth(role: ADMIN)
+    updateAdmin(adminInput:AdminInput!):Admin! @auth(role: ADMIN)
+    activateAdmin(id:ID!):Admin! @auth(role: ADMIN)
+    deactivateAdmin(id:ID!): Admin! @auth(role: ADMIN)
+    removeAdmin(id:ID!):Admin! @auth(role: ADMIN)
+}
