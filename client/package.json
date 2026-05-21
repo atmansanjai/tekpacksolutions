@@ -1,0 +1,47 @@
+{
+    "name": "client",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "schema": "get-graphql-schema http://localhost:8000/graphql > schema.graphql",
+        "relay": "relay-compiler"
+    },
+    "dependencies": {
+        "clsx": "^2.1.1",
+        "next": "16.2.6",
+        "react": "19.2.4",
+        "react-dom": "19.2.4",
+        "react-icons": "^5.6.0",
+        "react-relay": "^21.0.0",
+        "relay-runtime": "^21.0.0",
+        "server-only": "^0.0.1",
+        "sonner": "^2.0.7",
+        "tailwind-merge": "^3.6.0"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "@types/react-relay": "^18.2.1",
+        "@types/relay-runtime": "^20.1.1",
+        "babel-plugin-react-compiler": "1.0.0",
+        "babel-plugin-relay": "^21.0.0",
+        "eslint": "^9",
+        "eslint-config-next": "16.2.6",
+        "eslint-plugin-relay": "^2.0.0",
+        "get-graphql-schema": "^2.1.2",
+        "graphql": "^16.14.0",
+        "prettier": "^3.8.3",
+        "prettier-plugin-organize-imports": "^4.3.0",
+        "prettier-plugin-tailwindcss": "^0.8.0",
+        "relay-compiler": "^21.0.0",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+    }
+}

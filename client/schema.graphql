@@ -1,0 +1,361 @@
+directive @auth(role: Role) on FIELD_DEFINITION
+
+"""Exposes a URL that specifies the behavior of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behavior of this scalar."""
+  url: String!
+) on SCALAR
+
+"""
+Indicates exactly one field must be supplied and this field must not be `null`.
+"""
+directive @oneOf on INPUT_OBJECT
+
+type AccessDeniedError implements Error {
+  message: String!
+  requiredRole: String!
+}
+
+type Admin implements Node {
+  id: ID!
+  name: String!
+  email: EmailAddress!
+  isActive: Boolean!
+  slug: String!
+  role: Role!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type AdminConnectionOutput {
+  edges: [AdminEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AdminEdge {
+  cursor: String!
+  node: Admin!
+  admins: [Admin!]!
+}
+
+enum AdminField {
+  EMAIL
+  CREATED_AT
+}
+
+input AdminFilter {
+  isActive: Boolean
+  email: String
+}
+
+input AdminInput {
+  email: EmailAddress!
+  isActive: Boolean!
+}
+
+input AdminSort {
+  field: AdminField
+  order: sortOrder
+}
+
+type Category implements Node {
+  id: ID!
+  name: String!
+  description: String!
+  imageUrl: String!
+  slug: String!
+  sector: [Sector!]!
+  machine: [Machine!]!
+  isActive: Boolean!
+  createdAt: DateTime!
+  updateAt: DateTime!
+}
+
+type CategoryConnectionOutput {
+  edges: [CategoryEdge!]!
+  pageInfo: PageInfo!
+  categories: [Category!]!
+}
+
+type CategoryEdge {
+  cursor: String!
+  node: Category!
+}
+
+enum CategoryField {
+  NAME
+  CREATED_AT
+}
+
+input CategoryFilter {
+  isActive: Boolean
+  search: String
+}
+
+input CategoryInput {
+  name: String!
+  description: String!
+  imageUrl: String!
+  isActive: Boolean!
+  sector: [ID!]!
+  machine: [ID!]!
+}
+
+input CategorySort {
+  field: CategoryField
+  order: sortOrder
+}
+
+scalar DateTime
+
+scalar EmailAddress
+
+interface Error {
+  message: String!
+}
+
+type Machine implements Node {
+  id: ID!
+  name: String!
+  description: String!
+  imageUrl: String!
+  slug: String!
+  solution: [Solution!]!
+  category: [Category!]!
+  isActive: Boolean!
+  feature: [MachineDoc!]!
+  specification: [MachineDoc!]!
+  createdAt: DateTime!
+  updateAt: DateTime!
+}
+
+type MachineConnectionOutput {
+  edges: [MachineEdge!]!
+  pageInfo: PageInfo!
+  machines: [Machine!]!
+}
+
+type MachineDoc {
+  label: String
+  value: String
+}
+
+input MachineDocInput {
+  label: String
+  value: String
+}
+
+type MachineEdge {
+  cursor: String!
+  node: Machine!
+}
+
+enum MachineField {
+  NAME
+  CREATED_AT
+}
+
+input MachineFilter {
+  isActive: Boolean
+  search: String
+}
+
+input MachineInput {
+  name: String!
+  description: String!
+  imageUrl: String!
+  feature: [MachineDocInput!]!
+  spec: [MachineDocInput!]!
+  isActive: Boolean!
+  solution: [ID!]!
+  category: [ID!]!
+}
+
+input MachineSort {
+  field: MachineField
+  order: sortOrder
+}
+
+type Mutation {
+  saveAdmin(adminInput: AdminInput!): Admin!
+  updateAdmin(adminInput: AdminInput!): Admin!
+  activateAdmin(id: ID!): Admin!
+  deactivateAdmin(id: ID!): Admin!
+  removeAdmin(id: ID!): Admin!
+  saveCategory(categoryInput: CategoryInput!): Category!
+  updateCategory(id: ID!, categoryInput: CategoryInput!): Category!
+  removeCategory(id: ID!): Category!
+  activateCategory(id: ID!): Category!
+  deactivateCategory(id: ID!): Category!
+  removeMachineFromCategory(categoryId: ID!, machineId: ID!): Category!
+  addMachineFromCategory(categoryId: ID!, machineId: ID!): Category!
+  removeSectorFromCategory(categoryId: ID!, sectorId: ID!): Category!
+  addSectorFromCategory(categoryId: ID!, sectorId: ID!): Category!
+  saveMachine(machineInput: MachineInput!): Machine!
+  updateMachine(id: ID!, machineInput: MachineInput!): Machine!
+  removeMachine(id: ID!): Machine!
+  activateMachine(id: ID!): Machine!
+  deactivateMachine(id: ID!): Machine!
+  removeSolutionFromMachine(machineId: ID!, solutionId: ID!): Machine!
+  addSolutionFromMachine(machineId: ID!, solutionId: ID!): Machine!
+  removeCategoryFromMachine(machineId: ID!, categoryId: ID!): Machine!
+  addCategoryFromMachine(machineId: ID!, categoryId: ID!): Machine!
+  saveSector(sectorInput: SectorInput!): Sector!
+  updateSector(id: ID!, sectorInput: SectorInput!): Sector!
+  removeSector(id: ID!): Sector!
+  activateSector(id: ID!): Sector!
+  deactivateSector(id: ID!): Sector!
+  removeCategoryFromSector(sectorId: ID!, categoryId: ID!): Sector!
+  addCategoryFromSector(sectorId: ID!, categoryId: ID!): Sector!
+  removeSolutionFromSector(sectorId: ID!, solutionId: ID!): Sector!
+  addSolutionFromSector(sectorId: ID!, solutionId: ID!): Sector!
+  saveSolution(solutionInput: SolutionInput!): Solution!
+  updateSolution(id: ID!, solutionInput: SolutionInput!): Solution!
+  removeSolution(id: ID!): Solution!
+  activateSolution(id: ID!): Solution!
+  deactivateSolution(id: ID!): Solution!
+  removeMachineFromSolution(solutionId: ID!, machineId: ID!): Solution!
+  addMachineFromSolution(solutionId: ID!, machineId: ID!): Solution!
+  removeSectorFromSolution(solutionId: ID!, sectorId: ID!): Solution!
+  addSectorFromSolution(solutionId: ID!, sectorId: ID!): Solution!
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+  endCursor: String
+  startCursor: String
+  totalCount: Int!
+}
+
+type Query {
+  node(id: ID!): Node
+  me: Admin
+  admins(first: Int, after: String, last: Int, before: String, filter: AdminFilter, sort: AdminSort): AdminConnectionOutput!
+  adminByEmail(email: EmailAddress!): Admin!
+  adminById(id: ID!): Admin!
+  adminBySlug(slug: String): Admin!
+  categories(first: Int, after: String, last: Int, before: String, filter: CategoryFilter, sort: CategorySort): CategoryConnectionOutput!
+  categoryById(id: ID!): Category!
+  categoryBySlug(slug: String): Category!
+  machines(first: Int, after: String, last: Int, before: String, filter: MachineFilter, sort: MachineSort): MachineConnectionOutput!
+  machineById(id: ID!): Machine!
+  machineBySlug(slug: String): Machine!
+  sectors(first: Int, after: String, last: Int, before: String, filter: SectorFilter, sort: SectorSort): SectorConnectionOutput!
+  sectorById(id: ID!): Sector!
+  sectorBySlug(slug: String): Sector!
+  solutions(first: Int, after: String, last: Int, before: String, filter: SolutionFilter, sort: SolutionSort): SolutionConnectionOutput!
+  solutionById(id: ID!): Solution!
+  solutionBySlug(slug: String): Solution!
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+type Sector implements Node {
+  id: ID!
+  name: String!
+  description: String!
+  imageUrl: String!
+  slug: String!
+  category: [Category!]!
+  solution: [Solution!]!
+  isActive: Boolean!
+  createdAt: DateTime!
+  updateAt: DateTime!
+}
+
+type SectorConnectionOutput {
+  edges: [SectorEdge!]!
+  pageInfo: PageInfo!
+  sectors: [Sector!]!
+}
+
+type SectorEdge {
+  cursor: String!
+  node: Sector!
+}
+
+enum SectorField {
+  NAME
+  CREATED_AT
+}
+
+input SectorFilter {
+  isActive: Boolean
+  search: String
+}
+
+input SectorInput {
+  name: String!
+  description: String!
+  imageUrl: String!
+  isActive: Boolean!
+  category: [ID!]!
+  solution: [ID!]!
+}
+
+input SectorSort {
+  field: SectorField
+  order: sortOrder
+}
+
+type Solution implements Node {
+  id: ID!
+  name: String!
+  description: String!
+  imageUrl: String!
+  slug: String!
+  machine: [Machine!]!
+  sector: [Sector!]!
+  isActive: Boolean!
+  createdAt: DateTime!
+  updateAt: DateTime!
+}
+
+type SolutionConnectionOutput {
+  edges: [SolutionEdge!]!
+  pageInfo: PageInfo!
+  solutions: [Solution!]!
+}
+
+type SolutionEdge {
+  cursor: String!
+  node: Solution!
+}
+
+enum SolutionField {
+  NAME
+  CREATED_AT
+}
+
+input SolutionFilter {
+  isActive: Boolean
+  search: String
+}
+
+input SolutionInput {
+  name: String!
+  description: String!
+  imageUrl: String!
+  isActive: Boolean!
+  sector: [ID!]!
+  machine: [ID!]!
+}
+
+input SolutionSort {
+  field: SolutionField
+  order: sortOrder
+}
+
+enum sortOrder {
+  ASC
+  DESC
+}
+
